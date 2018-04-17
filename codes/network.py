@@ -8,8 +8,10 @@ A module to implement stochastic gradient descent algorithm for feedforward neur
 Gradients are calculated using backpropagation. 
 """
 
+import os
+os.chdir("F:\\neuralnetworksanddeeplearning\\codes")
 import numpy as np
-import random
+from mnist_loader import load_data_wrapper
 
 class Network(object):
     """The list sizes contains the number of neurons in the respecitve layers of the netdwork. The
@@ -36,9 +38,22 @@ class Network(object):
             za.append([z,a])
         return(np.array(za))
     
-    def GD(self, learning_rate, training_data):
-        za = self.feedforward(self, a)
-        print(za)
+    def GD(self, learning_rate = 0.01, training_data):
+        
+        training_inputs, training_labels = zip(*training_data)
+        training_inputs = np.array(training_inputs)
+        training_inputs = training_inputs.reshape((50000, 784)).T
+        training_labels = np.array(training_labels)
+
+        za = self.feedforward(self, training_inputs)
+        a2 = za[1, 1]
+        z2 = za[1, 0]
+        da2 = -1* np.mean(training_data[1] - a2)
+        dw2 = da2 * 
+
+training_data, validation_data, test_data = load_data_wrapper()
+net = Network([784, 10, 1])
+net.feedforward(training_inputs)
 
 net = Network([2,3,1])
 a = np.array([1,1])
