@@ -38,30 +38,36 @@ class Network(object):
             za.append([z,a])
         return(np.array(za))
     
-    def GD(self, learning_rate = 0.01, training_data):
+    def gradientDescent(self, training_data, learning_rate = 0.01):
         
         training_inputs, training_labels = zip(*training_data)
         training_inputs = np.array(training_inputs)
-        training_inputs = training_inputs.reshape((50000, 784)).T
+        training_inputs = training_inputs.reshape((training_inputs.shape[0], training_inputs.shape[1])).T
         training_labels = np.array(training_labels)
-
-        za = self.feedforward(self, training_inputs)
-        a2 = za[1, 1]
+        training_labels = training_labels.reshape((training_labels.shape[0], training_labels.shape[1])).T
+        
+        grads_w = [np.zeros(w.shape) for w in self.weights]
+        grads_b = [np.zeros(b.shape) for b in self.biases]
+        
+        za = self.feedforward(training_inputs)
+        z = za[-1, 0]
+        a = za[-1, 1]
+        dz = a - training_labels
+        dw = da * np.dot(sigmoid_deri(z).shape)
+        
         z2 = za[1, 0]
-        da2 = -1* np.mean(training_data[1] - a2)
-        dw2 = da2 * 
+        a2 = za[1, 1]
+        da2 = da3 * self.weights[2] * sigmoid_deri(z2)
+        
+        #a2 = za[1, 1]
+        #z2 = za[1, 0]
+        #da2 = -1* np.mean(training_data[1] - a2)
 
 training_data, validation_data, test_data = load_data_wrapper()
-net = Network([784, 10, 1])
-net.feedforward(training_inputs)
+net = Network([784, 10, 10, 1])
+za = net.GD(training_data = training_data)
 
-net = Network([2,3,1])
-a = np.array([1,1])
-a = a.reshape((2,1))
-za = net.feedforward(a)
-za.shape
-za[0]
-sigmoid(np.matmul(net.weights[0], a) + net.biases[0])
+
 
 ###Miscellenous Functions
 def sigmoid(z):
