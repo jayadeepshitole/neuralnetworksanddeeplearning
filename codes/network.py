@@ -12,6 +12,7 @@ import os
 os.chdir("F:\\neuralnetworksanddeeplearning\\codes")
 import numpy as np
 from mnist_loader import load_data_wrapper
+from generalFunctions import sigmoid, sigmoid_deri
 
 class Network(object):
     """The list sizes contains the number of neurons in the respecitve layers of the netdwork. The
@@ -66,14 +67,3 @@ class Network(object):
 training_data, validation_data, test_data = load_data_wrapper()
 net = Network([784, 10, 10, 1])
 za = net.GD(training_data = training_data)
-
-
-
-###Miscellenous Functions
-def sigmoid(z):
-    """Return sigmoid of z"""
-    return (1/(1 + np.exp(-1* z)))
-
-def sigmoid_deri(z):
-    """Return derivative of sigmoid function at z"""
-    return (np.exp(z)/pow((1 + np.exp(z)), 2))

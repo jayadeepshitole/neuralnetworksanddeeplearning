@@ -5,17 +5,9 @@ Created on Wed Apr 18 09:48:56 2018
 @author: jayadeep
 """
 
-import os
-os.chdir("F:\\neuralnetworksanddeeplearning\\codes")
 import numpy as np
-import pandas as pd
+from generalFunctions import sigmoid
 import matplotlib.pyplot as plt
-import h5py
-import scipy
-from PIL import Image
-from scipy import ndimage
-from lr_utils import load_dataset
-
 
 class LogisticRegression(object):
     def __init__(self, number_features):
@@ -37,61 +29,49 @@ class LogisticRegression(object):
         db = (1 / m) * np.sum(dZ)
         return(dW, db)
     
-    def train(self, X, y, learning_rate = 0.01, epochs = 10, verbose = True):
-        X = X.T
-        y = y.T
+    def train(self, X, y, learning_rate = 0.01, epochs = 100, print_cost = True, plot_cost = True):
         m = X.shape[1]
         
-        for i in range(epochs):
+        epoch_costs = []
+        for i in range(epochs + 1):
             dW, db = self.gradients(X, y)
             self.weight = self.weight - learning_rate * dW
             self.bias = self.bias - learning_rate * db
             
-            if verbose == True:
-                if (i % 10 == 0):
+            if print_cost == True:
+                if (i % 50 == 0):
                     A = sigmoid(np.dot(self.weight.T, X) + self.bias)
                     cost = (- 1 / m) * np.sum(y * np.log(A) + (1 - y) * (np.log(1 - A))) 
-                    print(f"cost at epoch: {i} is {cost}")
+                    epoch_costs.append([i, cost])
+                    print(f"cost at epoch: {i} is {np.round(cost, 4)}")
+        costs = np.array(epoch_costs)
+        if plot_cost:
+            plt.plot(costs[:, 0], costs[:, 1])
+            plt.xlabel("epoch")
+            plt.ylabel("cost")
+            plt.title("Logistic curve fitting loss function")
+            plt.show()
         
-
-# Loading the data (cat/non-cat)
-train_set_x_orig, train_set_y, test_set_x_orig, test_set_y, classes = load_dataset()
-
-# Example of a picture
-index = 25
-plt.imshow(train_set_x_orig[index])
-print ("y = " + str(train_set_y[:,index]) + ", it's a '" + classes[np.squeeze(train_set_y[:,index])].decode("utf-8") +  "' picture.")            
-
-# Reshape the training and test examples
-train_set_x_flatten = train_set_x_orig.reshape(train_set_x_orig.shape[0], -1).T
-test_set_x_flatten = test_set_x_orig.reshape(test_set_x_orig.shape[0], -1).T
-print ("train_set_x_flatten shape: " + str(train_set_x_flatten.shape))
-print ("train_set_y shape: " + str(train_set_y.shape))
-print ("test_set_x_flatten shape: " + str(test_set_x_flatten.shape))
-print ("test_set_y shape: " + str(test_set_y.shape))
-print ("sanity check after reshaping: " + str(train_set_x_flatten[0:5,0]))
-
-train_set_x = train_set_x_flatten / 255.
-test_set_x = test_set_x_flatten / 255.
-
-LR = LogisticRegression(number_features = 12288)
-X = train_set_x.T
-y = train_set_y.T
-LR.train(X, y, learning_rate=0.009, epochs=100)
-LR.bias
-
-LR = LogisticRegression(number_features = 2)
-LR.weight, LR.bias, X, y = np.array([[1], [2]]), 2, np.array([[1,2], [3,4]]).T, np.array([[1, 0]]).T
-LR.gradients(X, y)
-LR.train(X, y, learning_rate=0.009, epochs=100)
-LR.bias
-
+    def predict(self, X):
+        """
+        compute predicted value of class probability using fitted looistic regression model
+        
+        Argument:
+        X -- a numpy ndarray of shape (num_features, n) where n is the number of samples j
+        
+        Return:
+        p -- a numpy ndarray of shape (1, n), prediction of prob(class = 1)
+        """
+        
+        p = sigmoid(np.matmul(self.weight.T , X)  + self.bias)
+        return p
     
-###Miscellenous Functions
-def sigmoid(z):
-    """Return sigmoid of z"""
-    return (1/(1 + np.exp(-1* z)))
-
-def sigmoid_deri(z):
-    """Return derivative of sigmoid function at z"""
-    return (np.exp(z)/pow((1 + np.exp(z)), 2))
+        
+        
+        
+        
+        
+        
+        
+        
+        
