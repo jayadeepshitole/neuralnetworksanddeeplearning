@@ -19,7 +19,7 @@ from mnist_loader import load_data
 ###################################################################################################
 
 ##Data
-# Loading the data (cat/non-cat)
+# Loading the Zipcode data
 """
 The data contains:
     - a training set of m_train images labeled as cat (y = 1) or non-cat (y = 0) 
