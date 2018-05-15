@@ -12,7 +12,6 @@ Reference: http://neuralnetworksanddeeplearning.com/chap1.html
 import os
 os.chdir("F:\\neuralnetworksanddeeplearning\\codes")
 import numpy as np
-from mnist_loader import load_data_wrapper
 from generalFunctions import sigmoid, sigmoid_deri
 
 class Network(object):
@@ -63,18 +62,18 @@ class Network(object):
         return grads
         
     def train(self, X_train, Y_train, X_test, Y_test, epochs = 100, batch_size = 32, learning_rate = 0.005):
-		"""
-		Updates weights and biases of neural network using batch gradient descent. This function prints loss function value and test accuracy after every 10 epochs.
+        """
+        Updates weights and biases of neural network using batch gradient descent. This function prints loss function value and test accuracy after every 10 epochs.
 		
-		Arguments:
-		X_train -- training data, a numpy.ndarray of shape (num_px*num*px, m_train)
-		Y_train -- training data labels, a numpy.ndarray of shape (total number of categories, m_train)
-		X_test -- test data, a numpy.ndarray of shape (num_px*num*px, m_test)
-		Y_test -- test data labels, a numpy.ndarray of shape (total number of categories, m_test)
-		epochs -- number of learning iterations over the whole training data set
-		batch_size	-- number of training examples used in batch gradient descent to update weights
-		learning_rate -- learning rate used in updating the weights and biases
-		"""
+        Arguments:
+        X_train -- training data, a numpy.ndarray of shape (num_px*num*px, m_train)
+        Y_train -- training data labels, a numpy.ndarray of shape (total number of categories, m_train)
+        X_test -- test data, a numpy.ndarray of shape (num_px*num*px, m_test)
+        Y_test -- test data labels, a numpy.ndarray of shape (total number of categories, m_test)
+        epochs -- number of learning iterations over the whole training data set
+        batch_size	-- number of training examples used in batch gradient descent to update weights
+        learning_rate -- learning rate used in updating the weights and biases
+        """
         m_train = X_train.shape[1]
         for epoch in range(epochs + 1):
             batch = np.arange(0, m_train)
@@ -98,14 +97,14 @@ class Network(object):
                 print(f"epoch:{epoch}, Cost: {cost}, accuracy:{acc}/{X_test.shape[1]}")
                 
     def update_weights(self, X, Y, learning_rate):
-		"""
-		This function calculates gradients and updates weights
+        """
+        This function calculates gradients and updates weights
 		
-		Arguments:
-		X -- training data, mini batch of size (num_px*num*px, batch_size)
-		Y -- training labels, mini batch of size (number of categories, batch_size)
-		learning_rate -- learning rate 
-		"""
+        Arguments:
+        X -- training data, mini batch of size (num_px*num*px, batch_size)
+        Y -- training labels, mini batch of size (number of categories, batch_size)
+        learning_rate -- learning rate 
+        """
         grads = self.calculate_gradients(X, Y)
         #update weights and biases
         self.weights[0] = self.weights[0] - learning_rate * grads["dW1"]
@@ -115,20 +114,19 @@ class Network(object):
         
     
     def feedforward(self, X):
-		"""
-		This function calculates the Y_pred, feedforward propagation.
-		
-		Argument:
-		X -- training data, a numpy.ndarray of shape (num_px*num*px, total number of examples)
-		
-		Return:
-		A2 -- feedforward output, Y_pred of size (number of categories, total number of examples)
-		"""
-        Z1 = np.matmul(self.weights[0], X) + self.biases[0]       #(30, m)
-        A1 = sigmoid(Z1)                                          #(30, m)
-        Z2 = np.matmul(self.weights[1], A1) + self.biases[1]       #(10, m)
-        A2 = sigmoid(Z2)                                          #(10, m)
-        return A2        
+        """
+        This function calculates the Y_pred, feedforward propagation.
+    		
+        Argument:
+        X -- training data, a numpy.ndarray of shape (num_px*num*px, total number of examples)
+    		
+        Return:
+        A -- feedforward output, Y_pred of size (number of categories, total number of examples)
+        """
+        A = X
+        for b, W in zip(self.biases, self.weights):
+            A = sigmoid(np.matmul(W, A) + b)
+        return A        
         
     
     
