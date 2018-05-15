@@ -61,7 +61,7 @@ class Network(object):
         grads = {"dW1":dW1, "db1":db1, "dW2":dW2, "db2":db2}        
         return grads
         
-    def train(self, X_train, Y_train, X_test, Y_test, epochs = 100, batch_size = 32, learning_rate = 0.005):
+    def train(self, X_train, Y_train, X_test = None, Y_test = None, epochs = 100, batch_size = 32, learning_rate = 0.005):
         """
         Updates weights and biases of neural network using batch gradient descent. This function prints loss function value and test accuracy after every 10 epochs.
 		
@@ -88,13 +88,14 @@ class Network(object):
                 # Loss function
                 A2 = self.feedforward(X_train)
                 cost = (1 / m_train) * np.sum(-np.multiply(Y_train, np.log(A2)) - np.multiply(1 - Y_train, np.log(1 - A2)))
-                
+                print(f"epoch:{epoch}, Cost: {cost}, ", end = '')
                 # Accutacy on training data
-                A2_test = self.feedforward(X_test)
-                class_pred = A2_test.argmax(axis = 0)
-                class_actual = Y_test.argmax(axis = 0)
-                acc = sum(class_actual == class_pred)
-                print(f"epoch:{epoch}, Cost: {cost}, accuracy:{acc}/{X_test.shape[1]}")
+                if X_test is not None and Y_test is not None:
+                    A2_test = self.feedforward(X_test)
+                    class_pred = A2_test.argmax(axis = 0)
+                    class_actual = Y_test.argmax(axis = 0)
+                    acc = sum(class_actual == class_pred)
+                    print(f"accuracy:{acc}/{X_test.shape[1]}")
                 
     def update_weights(self, X, Y, learning_rate):
         """
@@ -126,21 +127,4 @@ class Network(object):
         A = X
         for b, W in zip(self.biases, self.weights):
             A = sigmoid(np.matmul(W, A) + b)
-        return A        
-        
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+        return A
